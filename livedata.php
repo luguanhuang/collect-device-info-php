@@ -13,35 +13,20 @@ window.onload = function ()
 	maintimeid = setInterval(_reqConnData(pageName),30000);*/
 }
 </script>
-<script src="js/livedata.js"></script>
+
 <?php
-if(!isset($_SERVER['HTTP_REFERER']))
-{
-	TLOG_MSG("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
-	//parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)!='yx.1.com'
-    //exit('no premission');
-}else{
-    //echo 'ok';
-}
+
 require_once 'testtmp.php';
 require("services/AtherFrameWork.php");
 //require("submitlivedata.php");
 global $Obj_Frame;
 global $Ary_Result;
-require("services/Config.php");
-
-error_reporting(0);
-session_start();
-$Int_Report	= ini_get('error_reporting');
-error_reporting($Int_Report);
-$tmp = &$_SESSION[_GLO_SESSION_USERINFO_]['userinfo'];
-$user = &$_SESSION[_GLO_SESSION_USERINFO_]['username'];
 
 TLOG_INIT(TLOG_LEVEL_M, 10, 1024000, "./logs", "livedata",0);
 $var=explode("&",$_SERVER["QUERY_STRING"]);
 
 $devname=explode("=",$var[1]);
-TLOG_MSG("livedata: func begin22 data=".$devname[0]." devname=".$devname[1]." devicedesc=".$_REQUEST['devicedesc']." templatelocation=".$_REQUEST['templatelocation']." user=".$user);
+TLOG_MSG("livedata: func begin22 data=".$devname[0]." devname=".$devname[1]." devicedesc=".$_REQUEST['devicedesc']." templatelocation=".$_REQUEST['templatelocation']." data=".$_SERVER["QUERY_STRING"]);
 $Obj_Frame = new AtherFrameWork();
 $Ary_Result= $Obj_Frame->load_page("Channel::getChannelInfo",$devname[1],false);
 
@@ -62,14 +47,14 @@ $Ary_Result= $Obj_Frame->load_page("Channel::getChannelInfo",$devname[1],false);
 <link type="text/css" rel="stylesheet" href="public.css" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/route.js"></script>
-<script type="text/javascript" src="js/chart.js-3.7.0/package/dist/chart.js"></script>
+<script type="text/javascript" src="js/Chart.js"></script>
 
 </head>
 <body style="text-align: left;background:#f6f6f6">
 <button id="mainpage" name="mainpage" class="tablink" onclick="MainPage(this)"><?=$devname[1]?></button>
 <button id="livetrend" name="livetrend" class="tablink" onclick="livetrend(this)">livetrend</button>
-<button id="Historical" name="Historical" class="tablink" onclick="Historical(this)">Historical</button>
-<button id="Alarm" name="Alarm" class="tablink" onclick="alarmtrend(this)">Alarm</button>
+<button id="Historical" name="Historical" class="tablink" onclick="">Historical</button>
+<button id="Alarm" name="Alarm" class="tablink" onclick="">Alarm</button>
 <button id="Report" name="Report" class="tablink" onclick="ReportPage(this)">Report</button>
 
 <?php
@@ -104,36 +89,8 @@ $Ary_Result= $Obj_Frame->load_page("Channel::getChannelInfo",$devname[1],false);
       require('footer.html');
       require('loadjs.html');
     ?>
-	<div id="alarminfo1" style ="width:60%;height:auto;margin-top: 100px;">
-	<div id="alarminfo" class="divOne" style="display:none">
-	<table border="0" align="right" cellpadding="0" cellspacing="0" class="listtab" style="width:60%;height:30px;">
 	
-	<thead>
-	
-	 <td width='250px'>Tagname</td>
-	<td width='250px'>Alarm Data</td>
-	</tr>
-	<thead/>
-		<tbody>
-		
-		 <?php
-		 for ($i=1; $i<100; $i++)
-		 {
-		?>
-			 <tr id="alarmrow1_<?=$i?>" style="display:none">
-			 <td width='250px' id="ontag_<?=$i?>">11</td>
-			 <td width='250px' id="ontext_<?=$i?>">11</td>
-			 </tr>
-		 <?php
-		 }
-		 ?>
-		
-	  </tbody>
-	  </table>
-	  
-	</div></div>
-	
-	 <div id="history" class="div-levelWhole" style="display:none; height:50px;width:1400px;">
+	<div id="graph" class="div-levelWhole" style="display:none">
 	<table align="left" cellpadding="0" cellspacing="0" border="0" class="tab">
 		<tbody>
 		 <tr>
@@ -142,137 +99,65 @@ $Ary_Result= $Obj_Frame->load_page("Channel::getChannelInfo",$devname[1],false);
 		   <tr>
 		   
 		  
-		<td class="t">Tag1 name：</td>
+		<td class="t">tag name：</td>
 		<td class="c">
-		<select id="tag1_h" name="mainpagediv" onchange="Tag1HChg()" >
+		<select id="tag1" name="mainpagediv">
 		<option value="-1">select tag name</option>
 		
 	
 		</select>
 		</td>
-	
+		</tr>
+		
+		<tr>
 		   
 		  
-		<td class="t">Tag2 name：</td>
+		<td class="t">tag name：</td>
 		<td class="c">
-		<select id="tag2_h" name="mainpagediv" onchange="Tag2HChg()">
+		<select id="tag2" name="mainpagediv">
 		<option value="-1">select tag name</option>
 		
 	
 		</select>
-
+		</td>
+		</tr>
+		
+		<tr>
+		   
 		  
-		<td class="t">Tag3 name：</td>
+		<td class="t">tag name：</td>
 		<td class="c">
-		<select id="tag3_h" name="mainpagediv" onchange="Tag3HChg()">
+		<select id="tag3" name="mainpagediv">
 		<option value="-1">select tag name</option>
 		
 	
 		</select>
 		</td>
+		</tr>
 		
+		<tr>
+		   
 		  
-		<td class="t">Tag4 name：</td>
+		<td class="t">tag name：</td>
 		<td class="c">
-		<select id="tag4_h" name="mainpagediv" onchange="Tag4HChg()">
+		<select id="tag4" name="mainpagediv">
 		<option value="-1">select tag name</option>
 		
 	
 		</select>
 		</td>
-		
-		<td>
-		<input id="Hdate_from" name="searchForm[date_from]" class="text" value="" title="Search date from" placeholder="Date from"> 
-		</td>
-		<td>
-		<input id="Hdate_to" name="searchForm[date_to]" class="text" value="" title="Search date to" placeholder="Date to"> 
-		</td>
-		
 		</tr>
 		
 		
 		
 		</table>	
 		</td>
-		<td id="historyquery" style="width: 50px; height: 25px;" onclick="query()" width="50px"><input type="button" class="btn" value="query"> </td>
-		<td id="historyclear" style="width: 50px; height: 25px;" onclick="historyclear()" width="50px"><input type="button" class="btn" value="history Clear"> </td>
         </tr> 
         
 	  </tbody>
 	  </table>
 	  
 	</div>
-	
-	<div id="historydata" style="width:1000px;height:600px">   
-	<canvas id="Chartdata" ></canvas></div>
-	
-    <div id="graph" class="div-levelWhole" style="display:none; height:50px;width:1200px;">
-	<table align="left" cellpadding="0" cellspacing="0" border="0" class="tab">
-		<tbody>
-		 <tr>
-		  <td colspan="2" style="padding: 0; border: 0;">
-		   <table id="net" border="0">
-		   <tr>
-		   
-		  
-		<td class="t">Tag1 name：</td>
-		<td class="c">
-		<select id="tag1" name="mainpagediv" onchange="Tag1Chg()" >
-		<option value="-1">select tag name</option>
-		
-	
-		</select>
-		</td>
-	
-		   
-		  
-		<td class="t">Tag2 name：</td>
-		<td class="c">
-		<select id="tag2" name="mainpagediv" onchange="Tag2Chg()">
-		<option value="-1">select tag name</option>
-		
-	
-		</select>
-
-		  
-		<td class="t">Tag3 name：</td>
-		<td class="c">
-		<select id="tag3" name="mainpagediv" onchange="Tag3Chg()">
-		<option value="-1">select tag name</option>
-		
-	
-		</select>
-		</td>
-		
-		  
-		<td class="t">Tag4 name：</td>
-		<td class="c">
-		<select id="tag4" name="mainpagediv" onchange="Tag4Chg()">
-		<option value="-1">select tag name</option>
-		
-	
-		</select>
-		</td>
-		
-		
-		
-		</tr>
-		
-		
-		
-		</table>	
-		</td>
-		<td id="trendstart" style="width: 50px; height: 25px;" onclick="trendstart()" width="50px"><input type="button" class="btn" value="Trend Start"> </td>
-		<td id="trendclear" style="width: 50px; height: 25px;" onclick="trendclear()" width="50px"><input type="button" class="btn" value="Trend Clear"> </td>
-        </tr> 
-        
-	  </tbody>
-	  </table>
-	  
-	</div>
- <div id="trendspace" style="width:1000px;height:600px">   
-	<canvas id="myChart" ></canvas></div>
-	
 	
 	
 	
@@ -472,18 +357,18 @@ $Ary_Result= $Obj_Frame->load_page("Channel::getChannelInfo",$devname[1],false);
 
 		</div>
 		
-
+		
 	<script src="js/jquery-1.11.3.js"></script>
 	<script src="js/public.js"></script>
 	
 	<script src="js/jquery.simple-dtpicker.js"></script>
 	
-	
+	<script src="js/livedata.js"></script>
 	
 	<script>
 
 var cnt = 0;
-var trendtimeid = 0;
+
 var date_from = "";
 var date_to = "";
 function exportlist()
@@ -686,14 +571,7 @@ function SetStyle(pageName,elmnt)
   document.getElementById(pageName).style.display = "block";
   elmnt.style.backgroundColor = '#008880';
   document.getElementById('box').style.display = "none";
- 
-	
-	 document.getElementById('trendspace').style.display = "none";
-	document.getElementById('myChart').style.display = "none";
-	document.getElementById('history').style.display = "none";
-	document.getElementById('historydata').style.display = "none";
-	document.getElementById('alarminfo').style.display = "none";
-	document.getElementById('alarminfo1').style.display = "none";
+   document.getElementById('graph').style.display = "none";
 }
 
 function WriteData() 
@@ -721,8 +599,8 @@ function savedata()
 	var value = "";
 	for (var i=0;i<cnt;i++)
 	 {
-		 console.log("key111="+s_keySearch.key_index[i]+
-			" key_name="+s_keySearch.key_name[i]+" key="+key);
+		// console.log("key111="+s_keySearch.key_index[i]+
+			//" key_name="+s_keySearch.key_name[i]+" key="+key);
 		 if (key == s_keySearch.key_index[i])
 		 {
 			console.log("key="+s_keySearch.key_index[i]+
@@ -750,14 +628,8 @@ function savedata()
 		tmpdata += ",";
 		tmpdata += data.value;
 	}
-	
-	tmpdata += ",";
-	tmpdata += "<?=$user?>";
-	
 	var passwd = document.getElementById('passwd');
 	console.log("savedata passwd="+passwd.value + " chid="+tmpdata);
-	
-	
 	
 	var oStr = '';
 	var postData = {};
@@ -814,27 +686,6 @@ var s_keySearch =
 	key_index:Array()
 };
 
-var s_tagInfo = 
-{
-	tagname:Array(),
-	tagvalue:Array(),
-	tagsalldata1:Array(),
-	tagsalldata2:Array(),
-	tagsalldata3:Array(),
-	tagsalldata4:Array(),
-	alltime:Array()
-	//cnt:var
-};
-
-var s_tagInfoH = 
-{
-	tagname:Array(),
-	tagvalue:Array(),
-	//cnt:var
-};
-
-var curtrendnum = 0;
-var curtrendnumH = 0;
 
 var timeids = [];
 function ReportPage(elmnt) 
@@ -866,20 +717,10 @@ function ReportPage(elmnt)
 
   document.getElementById('ReportData').style.display = "block";
   elmnt.style.backgroundColor = '#008880';
-  console.log("ReportPage: func begin");
+  
    document.getElementById('box').style.display = "none";
 	 document.getElementById('graph').style.display = "none";
 	
-	 
-	  document.getElementById('trendspace').style.display = "none";
-	document.getElementById('myChart').style.display = "none";
-	document.getElementById('history').style.display = "none";
-	document.getElementById('historydata').style.display = "none";
-	 document.getElementById('alarminfo').style.display = "none";
-	 document.getElementById('alarminfo1').style.display = "none";
-	 //document.getElementById('myChart').style.display = "none";
-	 //if (trendtimeid > 0)
-		//clearInterval(trendtimeid);
 }
 
 
@@ -908,7 +749,6 @@ function setautoValue(tagid,dtype,pageName)
 	document.getElementById('ids').value=String(pageName) + String(tagid);
 	clickdtype = dtype;
 	console.log("tagid="+tagid);
-	clearInterval(trendtimeid);
 	
 }
 
@@ -1165,229 +1005,20 @@ function reqMainData(pageName)
 	}	
 }
 
-function Tag1HChg()
-{
-	var tag1=document.getElementById('tag1_h'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	
-	
-	for (var i=0; i<curtrendnumH; i++)
-	{
-		if (String(s_tagInfoH.tagname[i]) == String("tag1_h"))
-		{
-			console.log("Tag1Chg text111111="+text+" value="+value+" curtrendnumH="+curtrendnumH);
-			s_tagInfoH.tagvalue[i] = value;
-			return;
-		}
-		
-	}
-	
-	
-	s_tagInfoH.tagname[curtrendnumH] = "tag1_h";
-	s_tagInfoH.tagvalue[curtrendnumH] = value;
-	curtrendnumH++;
-	console.log("Tag1Chg text22222="+text+" value="+value+" curtrendnumH="+curtrendnumH);
-	
+function _reqMainData(pageName){
+ 
+       return function(){
+             reqMainData(pageName);
+       }
 }
 
-function Tag2HChg()
-{
-	console.log("Tag2Chg");
-	var tag1=document.getElementById('tag2_h'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag2Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnumH; i++)
-	{
-		if (String(s_tagInfoH.tagname[i]) == String("tag2_h"))
-		{
-			
-			s_tagInfoH.tagvalue[i] = value;
-			return;
-		}
-		
-	}
-	
-	
-	s_tagInfoH.tagname[curtrendnumH] = "tag2_h";
-	s_tagInfoH.tagvalue[curtrendnumH] = value;
-	curtrendnumH++;
-	
-	
-}
-
-function Tag3HChg()
-{
-	var tag1=document.getElementById('tag3_h'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag3Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnumH; i++)
-	{
-		if (String(s_tagInfoH.tagname[i]) == String("tag3_h"))
-		{
-			
-			s_tagInfoH.tagvalue[i] = value;
-			return;
-		}
-	}
-	
-	
-	s_tagInfoH.tagname[curtrendnumH] = "tag3_h";
-	s_tagInfoH.tagvalue[curtrendnumH] = value;
-	curtrendnumH++;
-	
-}
-
-function Tag4HChg()
-{
-	var tag1=document.getElementById('tag4_h'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag4Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnumH; i++)
-	{
-		if (String(s_tagInfoH.tagname[i]) == String("tag4_h"))
-		{
-			
-			s_tagInfoH.tagvalue[i] = value;
-			return;
-		}
-	}
-	
-	
-	s_tagInfoH.tagname[curtrendnumH] = "tag4_h";
-	s_tagInfoH.tagvalue[curtrendnumH] = value;
-	curtrendnumH++;
-	
-}
-
-function Tag1Chg()
-{
-	var tag1=document.getElementById('tag1'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	
-	
-	for (var i=0; i<curtrendnum; i++)
-	{
-		if (String(s_tagInfo.tagname[i]) == String("tag1"))
-		{
-			console.log("Tag1Chg text111111="+text+" value="+value+" curtrendnum="+curtrendnum);
-			s_tagInfo.tagvalue[i] = value;
-			return;
-		}
-		
-	}
-	
-	
-	s_tagInfo.tagname[curtrendnum] = "tag1";
-	s_tagInfo.tagvalue[curtrendnum] = value;
-	curtrendnum++;
-	console.log("Tag1Chg text22222="+text+" value="+value+" curtrendnum="+curtrendnum);
-	
-}
-
-function Tag2Chg()
-{
-	console.log("Tag2Chg");
-	var tag1=document.getElementById('tag2'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag2Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnum; i++)
-	{
-		if (String(s_tagInfo.tagname[i]) == String("tag2"))
-		{
-			
-			s_tagInfo.tagvalue[i] = value;
-			return;
-		}
-		
-	}
-	
-	
-	s_tagInfo.tagname[curtrendnum] = "tag2";
-	s_tagInfo.tagvalue[curtrendnum] = value;
-	curtrendnum++;
-	
-	
-}
-
-function Tag3Chg()
-{
-	var tag1=document.getElementById('tag3'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag3Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnum; i++)
-	{
-		if (String(s_tagInfo.tagname[i]) == String("tag3"))
-		{
-			
-			s_tagInfo.tagvalue[i] = value;
-			return;
-		}
-	}
-	
-	
-	s_tagInfo.tagname[curtrendnum] = "tag3";
-	s_tagInfo.tagvalue[curtrendnum] = value;
-	curtrendnum++;
-	
-}
-
-function Tag4Chg()
-{
-	var tag1=document.getElementById('tag4'); 
-	var index = tag1.selectedIndex;
-	var text = tag1.options[index].text; // 选中文本
-	var value = tag1.options[index].value; // 选中值
-	console.log("Tag4Chg text="+text+" value="+value);
-	
-	
-	for (var i=0; i<curtrendnum; i++)
-	{
-		if (String(s_tagInfo.tagname[i]) == String("tag4"))
-		{
-			
-			s_tagInfo.tagvalue[i] = value;
-			return;
-		}
-	}
-	
-	
-	s_tagInfo.tagname[curtrendnum] = "tag4";
-	s_tagInfo.tagvalue[curtrendnum] = value;
-	curtrendnum++;
-	
-}
-
-function gettaginfo(idx)
+function gettaginfo()
 {	
 	var oStr = '';
 	var postData = {};
 	var oAjax = null;
 	//post提交的数据
-	console.log("data info "+idx);
+	console.log("data info");
 	postData = {"cmd":"gettaginfo","devname":"<?=$devname[1]?>"};
 	//这里需要将json数据转成post能够进行提交的字符串  name1=value1&name2=value2格式
 	postData = (function(value){
@@ -1421,629 +1052,46 @@ function gettaginfo(idx)
 				json = JSON.parse(oAjax.responseText);
 				for(var i=0;i<json.result.tab.length;i++)
 				{
-					if (idx != "")
-						;
-					var tag1=document.getElementById('tag1'+idx); 
-					var tag2=document.getElementById('tag2'+idx); 
-					var tag3=document.getElementById('tag3'+idx); 
-					var tag4=document.getElementById('tag4'+idx); 
+					var tag1=document.getElementById('tag1'); 
+					var tag2=document.getElementById('tag2'); 
+					var tag3=document.getElementById('tag3'); 
+					var tag4=document.getElementById('tag4'); 
 					
 					
-					//console.log("tagid="+json.result.tab[i].tagid+" name="+json.result.tab[i].tagname);
+					console.log("tagid="+json.result.tab[i].tagid+" name="+json.result.tab[i].tagname);
 					//tag1.options.add(new Option("select group name","-1"));
 					if (json.result.tab[i].tagname && json.result.tab[i].tagname != "")
 					{
-						//var tmpid = String(<?=$devname[1]?>)+String(json.result.tab[i].chid) + "," + String(json.result.tab[i].tagid);
-						var tmpid = "<?=$devname[1]?>"+","+String(json.result.tab[i].chid) + "," + String(json.result.tab[i].tagid);
-						tag1.options.add(new Option(String(json.result.tab[i].tagname),String(tmpid)));
-						tag2.options.add(new Option(String(json.result.tab[i].tagname),String(tmpid)));
-						tag3.options.add(new Option(String(json.result.tab[i].tagname),String(tmpid)));
-						tag4.options.add(new Option(String(json.result.tab[i].tagname),String(tmpid)));
+						tag1.options.add(new Option(String(json.result.tab[i].tagname),String(json.result.tab[i].tagid)));
+						tag2.options.add(new Option(String(json.result.tab[i].tagname),String(json.result.tab[i].tagid)));
+						tag3.options.add(new Option(String(json.result.tab[i].tagname),String(json.result.tab[i].tagid)));
+						tag4.options.add(new Option(String(json.result.tab[i].tagname),String(json.result.tab[i].tagid)));
 					}
+					
+					/*tag2.options.add(new Option(json.result.tab[i].chid,
+						json.result.tab[i].tagname);
+					tag3.options.add(new Option(json.result.tab[i].chid,
+						json.result.tab[i].tagname);
+					tag4.options.add(new Option(json.result.tab[i].chid,
+						json.result.tab[i].tagname);*/
+
+
+
+					
 				}
+				//console.log("data info"+json.message);
+				//$_C.exit();$_C.Alert(json.message,null);
+				//console.log("length="+json.result.data.length);
 			}
 			catch(e)
 			{
 				console.log("'你访问的页面出错了");
+	　　　　　　//alert('你访问的页面出错了');
 	　　　　};
 		};
 	}
 }
 
-var isnew = 0;
-var myLineChart;
-
-function trendclear()
-{
-	console.log("trendclear: func begin");
-	
-	
-	s_tagInfo.tagsalldata1.length = 0;
-	s_tagInfo.tagsalldata2.length = 0;
-	s_tagInfo.tagsalldata3.length = 0;
-	s_tagInfo.tagsalldata4.length = 0;
-	s_tagInfo.alltime.length = 0;
-	myLineChart.data.labels = s_tagInfo.alltime;
-	myLineChart.data.datasets[0].data = s_tagInfo.tagsalldata1;
-	myLineChart.data.datasets[1].data = s_tagInfo.tagsalldata2;
-	myLineChart.data.datasets[2].data = s_tagInfo.tagsalldata3;
-	myLineChart.data.datasets[3].data = s_tagInfo.tagsalldata4;
-	
-	myLineChart.update();  
-}
-
-
-function reqTagTrendData(pageName)
-{
-	console.log("reqTagTrendData: func begin curtrendnum="+curtrendnum);
-	if (0 == curtrendnum)
-		return;
-	var data = "";
-	for (var i=0; i<curtrendnum; i++)
-	{
-		if (i == curtrendnum - 1)
-		{
-			data += s_tagInfo.tagvalue[i];
-		}
-		else
-			data += s_tagInfo.tagvalue[i] + "|";
-		console.log("reqTagTrendData [name="+s_tagInfo.tagname[i]+"] value="+s_tagInfo.tagvalue[i]);
-	}
-	
-	cnt = 0;
-	var oStr = '';
-	var postData = {};
-	var oAjax = null;
-	//post提交的数据
-	postData = {"cmd":"gettagdata","devname":data};
-	//这里需要将json数据转成post能够进行提交的字符串  name1=value1&name2=value2格式
-	postData = (function(value){
-	　　for(var key in value){
-	　　　　oStr += key+"="+value[key]+"&";
-	　　};
-	
-		oStr = oStr.substr(0, oStr.length - 1);  
-	　　return oStr;
-	}(postData));
-	//这里进行HTTP请求
-	try{
-	　　oAjax = new XMLHttpRequest();
-	}catch(e){
-	　　oAjax = new ActiveXObject("Microsoft.XMLHTTP");
-	};
-	
-	//post方式打开文件
-	oAjax.open('post','submitgraph.php?='+Math.random(),true);
-	//post相比get方式提交多了个这个
-	oAjax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	//post发送数据
-	oAjax.send(postData);
-	oAjax.onreadystatechange = function()
-	{
-	　　//当状态为4的时候，执行以下操作
-	　　if(oAjax.readyState == 4)
-		{
-			var now = new Date();
-			var year = now.getFullYear(); //得到年份
-			var month = now.getMonth()+1;//得到月份
-			var date = now.getDate();//得到日期
-			// var day = now.getDay();//得到周几
-			var hour= now.getHours();//得到小时数
-			var minute= now.getMinutes();//得到分钟数
-			var second= now.getSeconds();//得到秒数
-			var curtime = year+"-"+month+"-"+date + " " + hour + ":" + minute+":"+second;
-			var myDate = new Date();
-			//console.log("curtime="+curtime); //获取当前时间
-			
-			var labels = [], data1=[], data2=[], data3=[], data4=[];
-			json = JSON.parse(oAjax.responseText);
-			console.log("len="+json.result.tab.length);
-			//labels.push(curtime);
-            s_tagInfo.alltime.push(curtime);
-			if (s_tagInfo.alltime.length > 20)
-				s_tagInfo.alltime.shift();
-			labels = s_tagInfo.alltime;
-			for(var i=0;i<json.result.tab.length;i++)
-			{
-				
-				var tmp = json.result.tab[i].devname + "," + json.result.tab[i].chid+"," + json.result.tab[i].tagid;
-				console.log("tagdata="+json.result.tab[i].tagdata+" id="+json.result.tab[i].chid+" len="+s_tagInfo.tagsalldata1.length);
-				for (var j=0; j<curtrendnum; j++)
-				{
-					
-					//console.log("tmp="+tmp+" tagvalue="+s_tagInfo.tagvalue[i]);
-					if (tmp == s_tagInfo.tagvalue[j])
-					{
-						if (s_tagInfo.tagname[j] == "tag1")
-						{
-							s_tagInfo.tagsalldata1.push(json.result.tab[i].tagdata);
-							if (s_tagInfo.tagsalldata1.length > 20)
-								s_tagInfo.tagsalldata1.shift();
-							//console.log("tag1="+tmp+" curtrendnum="+curtrendnum+" curdata="+json.result.tab[i].tagdata);
-							//data1.push(json.result.tab[i].tagdata);
-							data1 = s_tagInfo.tagsalldata1;
-						}
-						else if (s_tagInfo.tagname[j] == "tag2")
-						{
-							s_tagInfo.tagsalldata2.push(json.result.tab[i].tagdata);
-							if (s_tagInfo.tagsalldata2.length > 20)
-								s_tagInfo.tagsalldata2.shift();
-							//console.log("tag2="+tmp+" curtrendnum="+curtrendnum+" curdata="+json.result.tab[i].tagdata);
-							data2 = s_tagInfo.tagsalldata2;
-							
-						}
-						else if (s_tagInfo.tagname[j] == "tag3")
-						{
-							s_tagInfo.tagsalldata3.push(json.result.tab[i].tagdata);
-							if (s_tagInfo.tagsalldata3.length > 20)
-								s_tagInfo.tagsalldata3.shift();
-							//console.log("tag3="+tmp+" curtrendnum="+curtrendnum+" curdata="+json.result.tab[i].tagdata);
-							data3 = s_tagInfo.tagsalldata3;
-						}
-						else if (s_tagInfo.tagname[j] == "tag4")
-						{
-							s_tagInfo.tagsalldata4.push(json.result.tab[i].tagdata);
-							if (s_tagInfo.tagsalldata4.length > 20)
-								s_tagInfo.tagsalldata4.shift();
-							//console.log("tag4="+tmp+" curtrendnum="+curtrendnum+" curdata="+json.result.tab[i].tagdata);
-							data4 = s_tagInfo.tagsalldata4;
-						}
-						break;
-					}
-				}
-			}
-			
-			
-			var tempData = {
-            labels: labels,
-            datasets: [
-		{
-            label: 'tag1',
-            data:  data1,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'rgba(153, 102, 255, 0.5)',
-            borderWidth: 2,
-            fill:false
-        },{
-            label: 'tag2',
-            data: data2,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'red',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        },{
-            label: 'tag3',
-            data: data3,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'blue',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        },{
-            label: 'tag4',
-            data: data4,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'green',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        }]
-			};
-			
-			if (isnew == 0)
-			{
-				 // 获取所选canvas元素的内容
-				var ctx = document.getElementById("myChart");
-				//设置图表高度
-				myLineChart = new Chart(ctx, {
-					type: 'line',
-					data: tempData,
-					options: {
-						maintainAspectRatio: true,
-					}
-					});
-				isnew = 1;
-			}
-			else
-			{
-				myLineChart.data.labels = labels;
-				myLineChart.data.datasets[0].data = data1;
-				myLineChart.data.datasets[1].data = data2;
-				myLineChart.data.datasets[2].data = data3;
-				myLineChart.data.datasets[3].data = data4;
-				
-				myLineChart.update();  
-			}
-    
-		}
-	}
-}
-
-function _reqTagTrendData(pageName){
- 
-       return function(){
-             reqTagTrendData(pageName);
-       }
-}
-
-var lineChart;
-var firsttime = 0;
-
-function reqHistoryTrendData(pageName)
-{
-	console.log("reqHistoryTrendData: func begin curtrendnumH="+curtrendnumH);
-	if (0 == curtrendnumH)
-		return;
-	var data = "";
-	for (var i=0; i<curtrendnumH; i++)
-	{
-		if (i == curtrendnumH - 1)
-		{
-			data += s_tagInfoH.tagvalue[i];
-		}
-		else
-			data += s_tagInfoH.tagvalue[i] + "|";
-		console.log("reqHistoryTrendData [name="+s_tagInfoH.tagname[i]+"] value="+s_tagInfoH.tagvalue[i]);
-	}
-	
-	cnt = 0;
-	var oStr = '';
-	var postData = {};
-	var oAjax = null;
-	//post提交的数据
-	var time =$('#Hdate_from').val()+"|"+$('#Hdate_to').val()
-	postData = {"cmd":"gethistorydata","devname":data,"time":time};
-	//这里需要将json数据转成post能够进行提交的字符串  name1=value1&name2=value2格式
-	postData = (function(value){
-	　　for(var key in value){
-	　　　　oStr += key+"="+value[key]+"&";
-	　　};
-	
-		oStr = oStr.substr(0, oStr.length - 1);  
-	　　return oStr;
-	}(postData));
-	//这里进行HTTP请求
-	try{
-	　　oAjax = new XMLHttpRequest();
-	}catch(e){
-	　　oAjax = new ActiveXObject("Microsoft.XMLHTTP");
-	};
-	
-	//post方式打开文件
-	oAjax.open('post','submitgraph.php?='+Math.random(),true);
-	//post相比get方式提交多了个这个
-	oAjax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	//post发送数据
-	oAjax.send(postData);
-	oAjax.onreadystatechange = function()
-	{
-	　　//当状态为4的时候，执行以下操作
-	　　if(oAjax.readyState == 4)
-		{
-			var now = new Date();
-			var year = now.getFullYear(); //得到年份
-			var month = now.getMonth()+1;//得到月份
-			var date = now.getDate();//得到日期
-			// var day = now.getDay();//得到周几
-			var hour= now.getHours();//得到小时数
-			var minute= now.getMinutes();//得到分钟数
-			var second= now.getSeconds();//得到秒数
-			var curtime = year+"-"+month+"-"+date + " " + hour + ":" + minute+":"+second;
-			var myDate = new Date();
-			//console.log("curtime="+curtime); //获取当前时间
-			
-			var labels = [], data1=[], data2=[], data3=[], data4=[];
-			json = JSON.parse(oAjax.responseText);
-			console.log("len="+json.result.tab.length);
-			//labels.push(curtime);
-           
-			
-			for(var i=0;i<json.result.tab.length;i++)
-			{
-				
-				var tmp = json.result.tab[i].devname + "," + json.result.tab[i].chid+"," + json.result.tab[i].tagid;
-				
-				for (var j=0; j<curtrendnumH; j++)
-				{
-					if (tmp == s_tagInfoH.tagvalue[j])
-					{
-						if (s_tagInfoH.tagname[j] == "tag1_h")
-						{
-							data1.push(json.result.tab[i].tagdata);
-							labels.push(json.result.tab[i].time);
-							console.log("tag1="+tmp+" curtrendnumH="+curtrendnumH+" curdata="+json.result.tab[i].tagdata+" time="+json.result.tab[i].time);
-							//data1.push(json.result.tab[i].tagdata);
-							
-						}
-						else if (s_tagInfoH.tagname[j] == "tag2_h")
-						{
-							data2.push(json.result.tab[i].tagdata);
-						//labels.push(json.result.tab[i].time);
-							console.log("tag2="+tmp+" curtrendnumH="+curtrendnumH+" curdata="+json.result.tab[i].tagdata+" time="+json.result.tab[i].time);
-							
-							
-						}
-						else if (s_tagInfoH.tagname[j] == "tag3_h")
-						{
-							data3.push(json.result.tab[i].tagdata);
-							//labels.push(json.result.tab[i].time);
-							console.log("tag3="+tmp+" curtrendnumH="+curtrendnumH+" curdata="+json.result.tab[i].tagdata+" time="+json.result.tab[i].time);
-							
-						}
-						else if (s_tagInfoH.tagname[j] == "tag4_h")
-						{
-							data4.push(json.result.tab[i].tagdata);
-							//labels.push(json.result.tab[i].time);
-							console.log("tag4="+tmp+" curtrendnumH="+curtrendnumH+" curdata="+json.result.tab[i].tagdata+" time="+json.result.tab[i].time);
-							
-						}
-						break;
-					}
-				}
-			}
-			
-			
-			var tempData = {
-            labels: labels,
-            datasets: [
-		{
-            label: 'tag1',
-            data:  data1,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'rgba(153, 102, 255, 0.5)',
-            borderWidth: 2,
-            fill:false
-        },{
-            label: 'tag2',
-            data: data2,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'red',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        },{
-            label: 'tag3',
-            data: data3,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'blue',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        },{
-            label: 'tag4',
-            data: data4,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor:'green',
-            borderWidth: 2,
-            lineTension:0,
-            fill:false
-        }]
-			};
-			
-			if (firsttime == 0)
-			{
-				 // 获取所选canvas元素的内容
-				var ctx = document.getElementById("Chartdata");
-				//设置图表高度
-				lineChart = new Chart(ctx, {
-					type: 'line',
-					data: tempData,
-					options: {
-						maintainAspectRatio: true,
-					}
-					});
-				firsttime = 1;
-			}
-			else
-			{
-				lineChart.data.labels = labels;
-				lineChart.data.datasets[0].data = data1;
-				lineChart.data.datasets[1].data = data2;
-				lineChart.data.datasets[2].data = data3;
-				lineChart.data.datasets[3].data = data4;
-				
-				lineChart.update();  
-			}
-				
-			
-    
-		}
-	}
-}
-
-function historyclear()
-{
-	console.log("historyclear: func begin");
-	var labels = [], data1=[], data2=[], data3=[], data4=[];
-	lineChart.data.labels = labels;
-	lineChart.data.datasets[0].data = data1;
-	lineChart.data.datasets[1].data = data2;
-	lineChart.data.datasets[2].data = data3;
-	lineChart.data.datasets[3].data = data4;
-	lineChart.update();  
-	
-	//trendtimeid = setInterval(_reqTagTrendData(pageName),5000);
-}
-
-function query()
-{
-	console.log("query: func begin");
-	
-	var pageName = 1;
-	clearInterval(trendtimeid);
-	//reqTagTrendData(pageName);
-	
-	
-	reqHistoryTrendData(pageName);
-	
-	
-	//trendtimeid = setInterval(_reqTagTrendData(pageName),5000);
-}
-
-function trendstart()
-{
-	console.log("trendstart: func begin");
-	
-	var pageName = 1;
-	clearInterval(trendtimeid);
-	reqTagTrendData(pageName);
-	//reqTagTrendData(pageName);
-	
-	trendtimeid = setInterval(_reqTagTrendData(pageName),5000);
-}
-
-function alarmtrend(elmnt) 
-{
-	for (var i=0; i<timeids.length; i++)
-	{
-		console.log("clearInterval id="+timeids[i]);
-		clearInterval(timeids[i]);
-	}
-	
-	<?php
-	if (is_array($Ary_Result['result']['data'])){
-		foreach($Ary_Result['result']['data'] as $k=>$row){
-			
-	?>
-		document.getElementById(<?=$row['ch']?>).innerHTML = "";
-	<?php }
-	}
-	?>
-	
-	var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].style.backgroundColor = "";
-  }
-
-  document.getElementById('box').style.display = "none";
-   document.getElementById('graph').style.display = "block";
-   
-  elmnt.style.backgroundColor = '#008880';
-  if (maintimeid > 0)
-	{
-		clearInterval(maintimeid);
-		maintimeid = 0;
-	}
-  
-	
-	document.getElementById('box').style.display = "none";
-	 document.getElementById('graph').style.display = "none";
-	 
-	  document.getElementById('trendspace').style.display = "none";
-	document.getElementById('myChart').style.display = "none";
-	document.getElementById('history').style.display = "none";
-	document.getElementById('historydata').style.display = "none";
-	 
-	document.getElementById('alarminfo').style.display = "block";
-	document.getElementById('alarminfo1').style.display = "block";
-	
-var oStr = '';
-	var postData = {};
-	var oAjax = null;
-	//post提交的数据
-	postData = {"cmd":"getalarminfo","devname":"<?=$devname[1]?>"};
-	//这里需要将json数据转成post能够进行提交的字符串  name1=value1&name2=value2格式
-	postData = (function(value){
-	　　for(var key in value){
-	　　　　oStr += key+"="+value[key]+"&";
-	　　};
-	
-		oStr = oStr.substr(0, oStr.length - 1);  
-	　　return oStr;
-	}(postData));
-	//这里进行HTTP请求
-	try{
-	　　oAjax = new XMLHttpRequest();
-	}catch(e){
-	　　oAjax = new ActiveXObject("Microsoft.XMLHTTP");
-	};
-	//post方式打开文件
-	oAjax.open('post','submitgraph.php?='+Math.random(),true);
-	//post相比get方式提交多了个这个
-	oAjax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	//post发送数据
-	oAjax.send(postData);
-	oAjax.onreadystatechange = function()
-	{
-	　　//当状态为4的时候，执行以下操作
-	　　if(oAjax.readyState == 4)
-		{
-			json = JSON.parse(oAjax.responseText);
-	　　　　for(var i=0;i<json.result.data.length;i++)
-			{
-				 document.getElementById(String("alarmrow1_"+json.result.data[i].tagid)).style.display='';
-				 
-				
-				 
-				 document.getElementById(String("ontext_"+json.result.data[i].tagid)).innerHTML = String(json.result.data[i].alarmontext);
-				  document.getElementById(String("ontag_"+json.result.data[i].tagid)).innerHTML = String(json.result.data[i].tagname);
-				 //document.getElementById(String("ontext_"+json.result.data[i].tagid)).style.display='block';
-				//  
-				console.log("alarmtrend: chid="+json.result.data[i].chid+" alarmontext="+json.result.data[i].alarmontext);
-				//var tmp = json.result.tab[i].devname + "," + json.result.tab[i].chid+"," + json.result.tab[i].tagid;
-			}
-		}
-	}
-}
-
-function Historical(elmnt) 
-{
-	for (var i=0; i<timeids.length; i++)
-	{
-		console.log("clearInterval id="+timeids[i]);
-		clearInterval(timeids[i]);
-	}
-	
-	<?php
-	if (is_array($Ary_Result['result']['data'])){
-		foreach($Ary_Result['result']['data'] as $k=>$row){
-			
-	?>
-		document.getElementById(<?=$row['ch']?>).innerHTML = "";
-	<?php }
-	}
-	?>
-	
-	
-	
-	
-	var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].style.backgroundColor = "";
-  }
-
-  document.getElementById('box').style.display = "none";
-   document.getElementById('graph').style.display = "block";
-   
-  elmnt.style.backgroundColor = '#008880';
-  if (maintimeid > 0)
-	{
-		clearInterval(maintimeid);
-		maintimeid = 0;
-	}
-  
-	
-	document.getElementById('box').style.display = "none";
-	 document.getElementById('graph').style.display = "none";
-	 document.getElementById('trendspace').style.display = "none";
-	document.getElementById('myChart').style.display = "none";
-	document.getElementById('history').style.display = "block";
-	document.getElementById('historydata').style.display = "block";
-	document.getElementById('alarminfo').style.display = "none";
-	document.getElementById('alarminfo1').style.display = "none";
-	gettaginfo("_h");
-}
 
 function livetrend(elmnt) 
 {
@@ -2062,10 +1110,6 @@ function livetrend(elmnt)
 	<?php }
 	}
 	?>
-	
-	
-	
-	
 	var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -2078,7 +1122,6 @@ function livetrend(elmnt)
 
   document.getElementById('box').style.display = "none";
    document.getElementById('graph').style.display = "block";
-   
   elmnt.style.backgroundColor = '#008880';
   if (maintimeid > 0)
 	{
@@ -2086,37 +1129,7 @@ function livetrend(elmnt)
 		maintimeid = 0;
 	}
   
-	gettaginfo("");
-	
-	var my_array = new Array();
-	my_array.push (5, 6, 7);
-	my_array.push (8, 9);
-	for (var i=0; i<my_array.length; i++)
-	{
-		//console.log("data="+my_array[i]);
-	}
-	
-	my_array.shift();
-	
-	for (var i=0; i<my_array.length; i++)
-	{
-		//console.log("data="+my_array[i]);
-	}
-	document.getElementById('history').style.display = "none";
-	document.getElementById('historydata').style.display = "none";
-	document.getElementById('myChart').style.display = "block";
-	document.getElementById('trendspace').style.display = "block";
-	document.getElementById('alarminfo').style.display = "none";
-	document.getElementById('alarminfo1').style.display = "none";
-	//document.getElementById('myChart').style.display = "block";
-}
-
-
-function _reqMainData(pageName){
- 
-       return function(){
-             reqMainData(pageName);
-       }
+	gettaginfo();
 }
 
 function MainPage(elmnt) 
@@ -2148,20 +1161,14 @@ function MainPage(elmnt)
 
   document.getElementById('box').style.display = "block";
    document.getElementById('graph').style.display = "none";
-    document.getElementById('myChart').style.display = "none";
-	document.getElementById('history').style.display = "none";
-	document.getElementById('historydata').style.display = "none";
-	document.getElementById('alarminfo').style.display = "none";
-	document.getElementById('alarminfo1').style.display = "none";
   elmnt.style.backgroundColor = '#008880';
 	if (maintimeid > 0)
 	{
 		clearInterval(maintimeid);
 	}
-	clearInterval(trendtimeid);
+	
 	var pageName = 1;
 	reqMainData(pageName);
-	clearInterval(trendtimeid);
 	maintimeid = setInterval(_reqMainData(pageName),5000);
 	
 }
@@ -2494,11 +1501,7 @@ function openPage(pageName,elmnt,color)
 		clearInterval(timeids[i]);
 	}
 	
-	if (maintimeid > 0)
-	{
-		clearInterval(maintimeid);
-		maintimeid = 0;
-	}
+	
 	
 	timeids.length = 0;
 	cnt = 0;
@@ -2527,22 +1530,8 @@ $('#date_to').appendDtpicker({
         "minuteInterval": 5
 	}); 
 
-$('#Hdate_from').appendDtpicker({
-	"closeOnSelected": true,
-        "current": "",
-        "autodateOnStart": false,
-       // "futureOnly": true,
-        "minuteInterval": 5
-	}); 
-$('#Hdate_to').appendDtpicker({
-	"closeOnSelected": true,
-        "autodateOnStart": false,
-       // "futureOnly": true,
-        "minuteInterval": 5
-	}); 
-
-// Get the element with id="mainpage" and click on it for defalut tag open 
-document.getElementById("mainpage").click();
+// Get the element with id="defaultOpen" and click on it
+//document.getElementById("defaultOpen").click();
 </script>
    
 

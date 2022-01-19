@@ -447,6 +447,9 @@ var $_A = new function (){
 			else {$str_url += "&"+$str_send;}
 			$str_send = null;
 		}
+		
+		console.log("str_mode="+$str_mode+" str_url="+$str_url+" Bln_Phase="+!!$Bln_Phase);
+		
 		$Obj_Ajax.open($str_mode,$str_url,!!$Bln_Phase);
 		$Obj_Ajax.setRequestHeader("Content-Type",$str_head);
 		try{

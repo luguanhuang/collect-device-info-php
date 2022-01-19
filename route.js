@@ -259,6 +259,41 @@ function Device_Validate($form){
 	);
 }
 
+function AddUser_Validate($form){
+	//alert("Station_Validate func begin111111"+document.getElementById("php_interface").value);
+	if (!$form){ return false; }
+	//alert("Route_Validate: func begin");
+	//验证表单
+	
+	
+	
+	$_G.Form	= $form;
+	$_G.Element	= $ary_element;
+	var	$ary_element = new Array();
+	$ary_element["companyname"]	= new Array(1,	null,	'companyname',		false);
+	$ary_element["stationname"]	= new Array(1,	null,	'stationname',		false);
+	$ary_element["active"]	= new Array(1,	null,	'active',		false);
+	$ary_element["groupname"]	= new Array(1,	null,	'groupname',		false);
+	//alert("Station_Validate mac="+$ary_element["macid"]);	
+	//alert("value=" + $form.tagName + " value=" + $form.elements['type'].value);
+	if (!$_G.submit()){$_C.Alert($_G.Error()+"！",$_G.errfocus); return false;}
+
+	//提交数据
+	return AjaxSubmit(
+		$form,
+		{
+			"backcall":function($frm){
+				$_C.Confirm(
+					$_A.result()[3]+" Do you want to continue adding User？",
+					function (){$frm.reset(1);},
+					function (){window.location.href='user.php';}
+				)
+			},
+			"backargs":[$form]
+		}
+	);
+}
+
 function Channel_Validate($form){
 	//alert("Station_Validate func begin111111"+document.getElementById("php_interface").value);
 	if (!$form){ return false; }
@@ -472,6 +507,43 @@ function Device_Setting($form){
 					$_A.result()[3]+" Do you want to continue edit device？",
 					function (){$frm.reset(1);},
 					function (){window.location.href='device.php';}
+				)
+			},
+			"backargs":[$form]
+		}
+	);
+}
+
+function User_Setting($form){
+	//alert("Station_Validate func begin111111"+document.getElementById("php_interface").value);
+	if (!$form){ return false; }
+	//alert("Route_Validate: func begin");
+	//验证表单
+	
+	
+	
+	$_G.Form	= $form;
+	$_G.Element	= $ary_element;
+	var	$ary_element = new Array();
+	$ary_element["companyname"]	= new Array(1,	null,	'companyname',		false);
+	$ary_element["stationname"]	= new Array(1,	null,	'stationname',		false);
+	$ary_element["active"]	= new Array(1,	null,	'active',		false);
+	$ary_element["groupname"]	= new Array(1,	null,	'groupname',		false);
+	$ary_element["id"]	= new Array(1,	null,	'id',		false);
+
+	//alert("Station_Validate mac="+$ary_element["macid"]);	
+	//alert("value=" + $form.tagName + " value=" + $form.elements['type'].value);
+	if (!$_G.submit()){$_C.Alert($_G.Error()+"！",$_G.errfocus); return false;}
+
+	//提交数据
+	return AjaxSubmit(
+		$form,
+		{
+			"backcall":function($frm){
+				$_C.Confirm(
+					$_A.result()[3]+" Do you want to continue edit User？",
+					function (){$frm.reset(1);},
+					function (){window.location.href='user.php';}
 				)
 			},
 			"backargs":[$form]
@@ -770,7 +842,41 @@ function Device_GetRowConf($row, $tagform)
 	
 	$row = $_G.intval($row);
 	
-	var $elm, $e, $ary_name = ['devname','status','companyname','macid','ptype','servip','servport','retry','timeout','polltime','groupname','stationname','socktype'];
+	var $elm, $e, $ary_name = ['devname','status','companyname','macid','ptype','servip','servport','retry','timeout','polltime','groupname','stationname','socktype','devicedesc','templatelocation','pic1filelocation','pic2filelocation','pic3filelocation','pic4filelocation','mainpagediv'];
+	for($e in $ary_name){
+		
+		$elm = $($ary_name[$e]+"_"+$row);
+		
+		if (!$elm || !$tagform.elements[$ary_name[$e]])
+		{
+			
+			return false; 
+		}
+		
+		console.log("val="+$elm.value);
+		$tagform.elements[$ary_name[$e]].value = $elm.value;
+	}
+	
+	$tagform.elements['id'].value = $row;
+	return true;
+}
+
+function Device_Seting($row){
+	//alert("Device_Seting");
+	var $form = document.forms.frm2;
+	//alert("Station_Seting: func begin row2="+$row);
+	if (!Device_GetRowConf($row,$form)){return false;}
+	
+	$form.submit();
+}
+
+function User_GetRowConf($row, $tagform)
+{
+	if (!$tagform || !$tagform.tagName || $tagform.tagName.toLowerCase()!="form"){ return false; }
+	
+	$row = $_G.intval($row);
+	
+	var $elm, $e, $ary_name = ['name','username','companyname','groupname','stationname','roll','status','mobile','email','writepassword','password'];
 	for($e in $ary_name){
 		
 		$elm = $($ary_name[$e]+"_"+$row);
@@ -789,11 +895,11 @@ function Device_GetRowConf($row, $tagform)
 	return true;
 }
 
-function Device_Seting($row){
+function User_Seting($row){
 	//alert("Device_Seting");
 	var $form = document.forms.frm2;
 	//alert("Station_Seting: func begin row2="+$row);
-	if (!Device_GetRowConf($row,$form)){return false;}
+	if (!User_GetRowConf($row,$form)){return false;}
 	
 	$form.submit();
 }
@@ -804,29 +910,68 @@ function Channel_GetRowConf($row, $tagform)
 	
 	$row = $_G.intval($row);
 	
-	var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname'];
+	var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname','chid','history','chdesc','reporttype','Alarmchannel'];
+	//var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname','chid','history','chdesc','reporttype'];
+	//var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname','history','chdesc'];
+	
 	for($e in $ary_name){
 		
 		$elm = $($ary_name[$e]+"_"+$row);
 		
 		if (!$elm || !$tagform.elements[$ary_name[$e]])
 		{
-			
+			//
+			console.log("data1 11="+$ary_name[$e]);
 			return false; 
 		}
 		
-		
+		console.log("data1 22="+$elm.value);
 		$tagform.elements[$ary_name[$e]].value = $elm.value;
+		
 		//alert("Channel_Seting1 " + $tagform.elements[$ary_name[$e]].value);
 	}
 	
 	//alert("Channel_Seting end1");
 	//$tagform.elements['id'].value = $row;
+	console.log("true");
+	return true;
+}
+
+function Tag_GetRowConf($row, $tagform)
+{
+	if (!$tagform || !$tagform.tagName || $tagform.tagName.toLowerCase()!="form"){ return false; }
+	
+	$row = $_G.intval($row);
+	
+	var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname'];
+	//var $elm, $e, $ary_name = ['id','devname','dtype','slaveid','funcode','startreg','countreg','status','groupname','stationname','companyname','history','chdesc'];
+	
+	for($e in $ary_name){
+		
+		$elm = $($ary_name[$e]+"_"+$row);
+		
+		if (!$elm || !$tagform.elements[$ary_name[$e]])
+		{
+			//
+			console.log("data1="+$ary_name[$e]);
+			return false; 
+		}
+		
+		console.log("data1="+$elm.value);
+		$tagform.elements[$ary_name[$e]].value = $elm.value;
+		
+		//alert("Channel_Seting1 " + $tagform.elements[$ary_name[$e]].value);
+	}
+	
+	//alert("Channel_Seting end1");
+	//$tagform.elements['id'].value = $row;
+	console.log("true");
 	return true;
 }
 
 function Channel_Seting($row){
-	//alert("Channel_Seting");
+	
+	
 	var $form = document.forms.frm2;
 	//$elm = $('devname'+"_"+$row);
 	//alert("Station_Seting: func begin row2="+$elm.value);
@@ -842,7 +987,18 @@ function Tag_Seting($row){
 	//$elm = $('devname'+"_"+$row);
 	//alert("Station_Seting: func begin row2="+$elm.value);
 	//
-	if (!Channel_GetRowConf($row,$form)){return false;}
+	if (!Tag_GetRowConf($row,$form)){return false;}
+	//alert("Station_Seting: func begin row21="+$row);
+	$form.submit();
+}
+
+function Alarm_Seting($row){
+	
+	var $form = document.forms.alarmeditfrm;
+	//$elm = $('devname'+"_"+$row);
+	//alert("Station_Seting: func begin row2="+$elm.value);
+	//
+	if (!Tag_GetRowConf($row,$form)){return false;}
 	//alert("Station_Seting: func begin row21="+$row);
 	$form.submit();
 }
@@ -1253,14 +1409,15 @@ function Tag_Show()
 	//document.getElementById('frm2').action = "livedata.php";  	
 	var $form = document.forms.frm2;
 	
+	$form.elements['devname'].value = "11";
 	//alert("Station_Seting: func begin row2="+$row);
 	//if (!Device_GetRowConf($row,$form)){return false;}
-	console.log("Tag_Show1 action444");
+	//console.log("Tag_Show1 action444");
 	$form.submit();
 	
 	
 	//返回
-	return false;
+	
 	
 	
 }
