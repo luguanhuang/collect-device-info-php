@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tag:title1}</title>
+<style type="text/css">
+<!--
+body{margin:0px auto; padding:0px; background-color:none;}
+body,p,div,li,td,span,font,label,b,i,u{font-size:12px;}
+code,kbd,var,dfn{font-style:normal;font-size:12px;}
+input,select{font-size:12px;vertical-align:middle;}
+
+form,pre{margin:0px;padding:0px;}
+ul{margin:0px;padding:0px;list-style-type:none;}
+ol{margin:0px;padding:0px;padding-left:24px;padding-left:0px \9;margin-left:24px \9;}
+
+a{color:#000; text-decoration:none;}
+a:hover{color:#FD4D20;}
+
+*.bred{font-weight:bold;color:#F00;}
+*.important{color:#FD4D20;}
+*.disabled{color:#808080;}
+input.disabled{background-color:#F0F0F0;}
+option.selected{background-color:#D8D8D8;color:#414874;font-weight:bold;}
+
+/*
+common
+*{word-break:break-all;word-wrap:break-word;}
+*{background-color:;background-image:;background-repeat:;background-position:;}
+*{background:#******* url() repeat fixed x y;}
+table{border:1px;border-collapse:collapse;}
+td{padding:0px;}
+*/
+
+body.main{margin:30px 40px 30px 40px;}
+body.main h3{font-size:16px;letter-spacing:2px;font-weight:bold;padding:0px;margin:0px auto 16px auto;text-align:center;height:24px;line-height:24px;}
+body.main h4{padding:6px 0px 4px 0px;margin:0px;height:24px;line-height:24px;text-align:right;border-top:1px solid #B0B0B0;font-weight:normal;}
+body.main h4 *{font-size:13px;}
+body.main h4 strong{margin-left:3px;margin-right:3px;}
+body.main h4 span{margin-right:18px;}
+body.main h4 span.last{margin-right:0px;}
+body.main h4 span.left{float:left;margin-right:12px;-margin-right:9px;}
+body.main .logbody{border:1px solid #BFBFBF; border-collapse:collapse;}
+body.main .logbody td{height:24px;height:18px \9;line-height:18px;text-align:center;border-right:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF;padding:4px 3px;font-size:13px;word-break:break-all;word-wrap:break-word;}
+body.main .logbody td.id{width:128px;}
+body.main .logbody td.ip{width:118px;}
+body.main .logbody td.port{width:78px;}
+body.main .logbody td.datetime{width:138px;}
+body.main .logbody td.longtext{text-align:left;padding:4px;}
+body.main .logbody thead td{height:28px;height:22px \9;line-height:22px;font-weight:bold;background-color:#EBEBEB;}
+body.main .logbody tbody tr:hover{background-color:#FFFEEE;}
+body.main .logbody tbody tr.row0 td{}
+body.main .logbody tbody tr.row1 td{background-color:#F7F7F7;}
+-->
+</style>
+</head>
+
+<body class="main">
+	<h3>{tag:title2}</h3>
+	<h4>
+		<span class="left">共<strong>{tag:total}</strong>条记录</span>
+		<span>操作用户：{tag:user}</span>
+		<span class="last">导出时间：{tag:datetime}<span>
+	</h4>
+	<!--start:log_table-->
+	<!--start:log-operator-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr> 	 	 	 	
+				<td class="datetime">操作时间</td>
+				<td class="id">客户端ID</td>
+				<td class="ip">客户端IP</td>
+				<td class="port">客户端口</td>
+				<td class="ip">服务器IP</td>
+				<td class="port">服务端口</td>
+				<td>操作信息</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+		  	</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-operator-->
+	<!--start:log-error-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr> 	 	 	 	
+				<td class="datetime">操作时间</td>
+				<td class="id">客户端ID</td>
+				<td class="ip">客户端IP</td>
+				<td class="port">客户端口</td>
+				<td class="ip">服务器IP</td>
+				<td class="port">服务端口</td>
+				<td>操作信息</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+		  	</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-error-->
+	<!--start:log-login-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr>
+				<td class="datetime">登录时间</td> 	 	 	
+				<td class="ip">登录IP</td>
+				<td>事件描述</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+			</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-login-->
+	<!--start:log-online-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr>
+				<td class="datetime">登录时间</td>
+				<td class="id">客户端ID</td>
+				<td class="ip">登录IP</td>
+				<td>在线时长</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+			</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-online-->
+	<!--start:log-offline-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr>
+				<td class="datetime">登录时间</td>
+				<td class="datetime">退出时间</td>
+				<td class="id">客户端ID</td>
+				<td class="ip">登录IP</td>
+				<td>在线时长</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+			</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-offline-->
+	<!--start:log-webadmin-->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="logbody">
+		<thead>
+			<tr>
+				<td class="datetime">操作时间</td>
+				<td class="ip">用户IP</td>
+				<td class="id">用户名</td>
+				<td>详细信息</td>
+			</tr>
+	  	</thead>
+		<tbody>
+		<!--start:log_body-->
+		<!--start:log_row-->
+			<tr class="row%u">
+				<td>%s</td>
+				<td>%s</td>
+				<td>%s</td>
+				<td class="longtext">%s</td>
+			</tr>
+		<!--end:log_row-->
+		<!--end:log_body-->
+		</tbody>
+	</table>
+	<!--end:log-webadmin-->
+	<!--end:log_table-->
+</body>
+</html>
